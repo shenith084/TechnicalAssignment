@@ -1,0 +1,94 @@
+.transactions-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.filters-bar {
+  margin-bottom: 20px;
+}
+
+.filters-grid {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.filters-grid .form-group {
+  flex: 1;
+  min-width: 140px;
+}
+
+.txn-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.txn-table th {
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--border);
+}
+
+.txn-row td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+  vertical-align: middle;
+}
+
+.txn-row:last-child td {
+  border-bottom: none;
+}
+
+.txn-row:hover td {
+  background: var(--bg-card-hover);
+}
+
+.txn-title-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.txn-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.txn-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.txn-note {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.txn-amount {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .txn-table th:nth-child(3),
+  .txn-row td:nth-child(3) { display: none; }
+}
