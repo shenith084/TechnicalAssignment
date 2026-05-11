@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.extensions import db
 from app.models.category import Category
+from app.models.transaction import Transaction
+from app.models.budget import Budget
 
 categories_bp = Blueprint("categories", __name__)
 
@@ -76,6 +78,12 @@ def delete_category(category_id):
     if not category:
         return jsonify({"error": "Category not found"}), 404
 
-    db.session.delete(category)
-    db.session.commit()
-    return jsonify({"message": "Category deleted"}), 200
+    try:
+        Transaction.query.filter_by(category_id=category_id, user_id=user_id).update({"category_id": None})
+        Budget.query.filter_by(category_id=category_id, user_id=user_id).delete()
+        db.session.delete(category)
+        db.session.commit()
+        return jsonify({"message": "Category deleted"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Failed to delete category"}), 500

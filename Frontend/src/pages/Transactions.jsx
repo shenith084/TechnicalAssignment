@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from 'react'
 import { getTransactions, createTransaction, updateTransaction, deleteTransaction } from '../api/transactions'
 import { getCategories } from '../api/categories'
 import Modal from '../components/Modal'
-import { Plus, Pencil, Trash2, Filter, ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import ConfirmDelete from '../components/ConfirmDelete'
+import { Plus, Pencil, Filter, ArrowUpRight, ArrowDownRight } from 'lucide-react'
 import './Transactions.css'
 
 function formatCurrency(n) {
@@ -65,9 +66,12 @@ export default function Transactions() {
   }
 
   async function handleDelete(id) {
-    if (!window.confirm('Delete this transaction?')) return
-    await deleteTransaction(id)
-    fetchData()
+    try {
+      await deleteTransaction(id)
+      fetchData()
+    } catch (err) {
+      console.error('Delete failed:', err)
+    }
   }
 
   async function handleSubmit(e) {
@@ -192,9 +196,9 @@ export default function Transactions() {
                     {t.type === 'income' ? '+' : '-'}{formatCurrency(t.amount)}
                   </td>
                   <td>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2" style={{ alignItems: 'center' }}>
                       <button className="btn-icon" id={`edit-txn-${t.id}`} onClick={() => openEdit(t)}><Pencil size={14} /></button>
-                      <button className="btn-icon" id={`del-txn-${t.id}`} style={{ color: 'var(--red)' }} onClick={() => handleDelete(t.id)}><Trash2 size={14} /></button>
+                      <ConfirmDelete onConfirm={() => handleDelete(t.id)} label="Delete transaction" />
                     </div>
                   </td>
                 </tr>

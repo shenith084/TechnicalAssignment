@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../api/categories'
 import Modal from '../components/Modal'
-import { Plus, Pencil, Trash2, Tag } from 'lucide-react'
+import ConfirmDelete from '../components/ConfirmDelete'
+import { Plus, Pencil, Tag } from 'lucide-react'
 import './Categories.css'
 
 const emptyForm = { name: '', type: 'expense' }
@@ -17,6 +18,7 @@ export default function Categories() {
   const [form, setForm] = useState(emptyForm)
   const [formError, setFormError] = useState('')
   const [saving, setSaving] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
 
   const fetchCategories = useCallback(async () => {
     setLoading(true)
@@ -47,9 +49,12 @@ export default function Categories() {
   }
 
   async function handleDelete(id) {
-    if (!window.confirm('Delete this category? Transactions using it will lose their category.')) return
-    await deleteCategory(id)
-    fetchCategories()
+    try {
+      await deleteCategory(id)
+      fetchCategories()
+    } catch (err) {
+      setDeleteError(err.response?.data?.error || 'Failed to delete category.')
+    }
   }
 
   async function handleSubmit(e) {
@@ -89,6 +94,9 @@ export default function Categories() {
           <Plus size={16} /> Add Category
         </button>
       </div>
+      {deleteError && (
+        <div className="error-message" style={{ marginBottom: 16 }}>{deleteError}</div>
+      )}
 
       {loading ? (
         <div className="flex-center" style={{ height: 200 }}><div className="spinner" /></div>
@@ -169,9 +177,9 @@ function CategorySection({ title, type, items, defaults, onAdd, onEdit, onDelete
                 <Tag size={13} />
                 {c.name}
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2" style={{ alignItems: 'center' }}>
                 <button className="btn-icon" id={`edit-cat-${c.id}`} onClick={() => onEdit(c)}><Pencil size={13} /></button>
-                <button className="btn-icon" id={`del-cat-${c.id}`} style={{ color: 'var(--red)' }} onClick={() => onDelete(c.id)}><Trash2 size={13} /></button>
+                <ConfirmDelete onConfirm={() => onDelete(c.id)} label="Delete category" />
               </div>
             </div>
           ))}

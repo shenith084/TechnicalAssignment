@@ -3,7 +3,8 @@ import { getBudgets, createBudget, updateBudget, deleteBudget } from '../api/bud
 import { getCategories } from '../api/categories'
 import { getBudgetProgress } from '../api/dashboard'
 import Modal from '../components/Modal'
-import { Plus, Pencil, Trash2, PiggyBank, AlertTriangle } from 'lucide-react'
+import ConfirmDelete from '../components/ConfirmDelete'
+import { Plus, Pencil, PiggyBank, AlertTriangle } from 'lucide-react'
 import './Budgets.css'
 
 function formatCurrency(n) {
@@ -66,9 +67,12 @@ export default function Budgets() {
   }
 
   async function handleDelete(id) {
-    if (!window.confirm('Delete this budget?')) return
-    await deleteBudget(id)
-    fetchData()
+    try {
+      await deleteBudget(id)
+      fetchData()
+    } catch (err) {
+      console.error('Delete failed:', err)
+    }
   }
 
   async function handleSubmit(e) {
@@ -149,9 +153,9 @@ export default function Budgets() {
                     <h3 className="budget-cat-name">{b.category_name}</h3>
                     <p className="budget-period">{months[b.month - 1]} {b.year}</p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2" style={{ alignItems: 'center' }}>
                     <button className="btn-icon" id={`edit-budget-${b.id}`} onClick={() => openEdit(b)}><Pencil size={14} /></button>
-                    <button className="btn-icon" id={`del-budget-${b.id}`} style={{ color: 'var(--red)' }} onClick={() => handleDelete(b.id)}><Trash2 size={14} /></button>
+                    <ConfirmDelete onConfirm={() => handleDelete(b.id)} label="Delete budget" />
                   </div>
                 </div>
                 <div className="budget-amounts-row">
