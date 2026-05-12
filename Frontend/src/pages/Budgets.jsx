@@ -27,6 +27,7 @@ export default function Budgets() {
   const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1)
   const [selectedYear, setSelectedYear] = useState(today.getFullYear())
 
+  // Fetch budgets, budget progress, and available categories for the selected month/year
   const fetchData = useCallback(async () => {
     setLoading(true)
     try {
@@ -75,6 +76,7 @@ export default function Budgets() {
     }
   }
 
+  // Handle creating a new budget or updating an existing one
   async function handleSubmit(e) {
     e.preventDefault()
     if (!form.category_id || !form.amount) {
@@ -96,7 +98,13 @@ export default function Budgets() {
         await createBudget(payload)
       }
       setModalOpen(false)
-      fetchData()
+      setSelectedMonth(payload.month)
+      setSelectedYear(payload.year)
+      
+      // If the month/year didn't change, manually trigger fetch
+      if (payload.month === selectedMonth && payload.year === selectedYear) {
+        fetchData()
+      }
     } catch (err) {
       setFormError(err.response?.data?.error || 'Failed to save budget')
     } finally {
@@ -199,7 +207,12 @@ export default function Budgets() {
           {formError && <div className="error-message">{formError}</div>}
           <div className="form-group">
             <label className="form-label" htmlFor="budget-category">Category</label>
-            <select id="budget-category" className="form-input" value={form.category_id} onChange={e => setForm(f => ({ ...f, category_id: e.target.value }))} required>
+            {categories.length === 0 ? (
+              <div className="budget-alert-box" style={{ marginBottom: '8px', background: 'var(--yellow-bg, #fef3c7)', color: 'var(--yellow, #d97706)', borderColor: 'rgba(217, 119, 6, 0.2)' }}>
+                You need to create an expense category first in the Categories page.
+              </div>
+            ) : null}
+            <select id="budget-category" className="form-input" value={form.category_id} onChange={e => setForm(f => ({ ...f, category_id: e.target.value }))} required disabled={categories.length === 0}>
               <option value="">Select category</option>
               {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>

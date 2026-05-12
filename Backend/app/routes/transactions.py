@@ -16,6 +16,7 @@ def parse_date(date_str):
         return None
 
 
+# Retrieve all transactions for the current user, with optional filtering
 @transactions_bp.route("/", methods=["GET"])
 @jwt_required()
 def get_transactions():
@@ -44,6 +45,7 @@ def get_transactions():
     return jsonify([t.to_dict() for t in transactions]), 200
 
 
+# Create a new income or expense transaction
 @transactions_bp.route("/", methods=["POST"])
 @jwt_required()
 def create_transaction():

@@ -24,6 +24,7 @@ export default function Transactions() {
   const [filters, setFilters] = useState({ type: '', category_id: '', date_from: '', date_to: '' })
   const [showFilters, setShowFilters] = useState(false)
 
+  // Fetch transactions based on current filters and load available categories
   const fetchData = useCallback(async () => {
     setLoading(true)
     try {
@@ -74,6 +75,7 @@ export default function Transactions() {
     }
   }
 
+  // Create a new transaction or update an existing one
   async function handleSubmit(e) {
     e.preventDefault()
     if (!form.title.trim() || !form.amount) {

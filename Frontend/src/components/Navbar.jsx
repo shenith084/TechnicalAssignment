@@ -21,6 +21,7 @@ export default function Navbar() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
+  // Clear session and redirect to login
   function handleLogout() {
     logout()
     navigate('/login')
@@ -32,6 +33,7 @@ export default function Navbar() {
         <TrendingUp size={22} className="brand-icon" />
         <span className="brand-name">FinTrack</span>
       </div>
+      
       <div className="nav-links">
         {navItems.map(({ to, label, icon: Icon }) => (
           <NavLink
@@ -45,6 +47,7 @@ export default function Navbar() {
           </NavLink>
         ))}
       </div>
+
       <div className="navbar-end">
         <div className="user-chip">
           <div className="avatar">{user?.username?.[0]?.toUpperCase()}</div>

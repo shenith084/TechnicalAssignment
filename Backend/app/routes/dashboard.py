@@ -129,3 +129,8 @@ def budget_progress():
         })
 
     return jsonify(result), 200
+
+@dashboard_bp.route("/debug", methods=["GET"])
+def debug():
+    budgets = Budget.query.all()
+    return jsonify([b.to_dict() for b in budgets]), 200

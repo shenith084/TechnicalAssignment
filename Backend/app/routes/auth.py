@@ -6,6 +6,7 @@ from app.models.user import User
 auth_bp = Blueprint("auth", __name__)
 
 
+# Register a new user and return an access token
 @auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
@@ -30,6 +31,7 @@ def register():
 
     user = User(username=username, email=email)
     user.set_password(password)
+    
     db.session.add(user)
     db.session.commit()
 
@@ -37,6 +39,7 @@ def register():
     return jsonify({"token": token, "user": user.to_dict()}), 201
 
 
+# Authenticate a user and return an access token
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
@@ -50,6 +53,7 @@ def login():
         return jsonify({"error": "Email and password are required"}), 400
 
     user = User.query.filter_by(email=email).first()
+    
     if not user or not user.check_password(password):
         return jsonify({"error": "Invalid email or password"}), 401
 
@@ -57,11 +61,14 @@ def login():
     return jsonify({"token": token, "user": user.to_dict()}), 200
 
 
+# Fetch current authenticated user details
 @auth_bp.route("/me", methods=["GET"])
 @jwt_required()
 def me():
     user_id = int(get_jwt_identity())
     user = db.session.get(User, user_id)
+    
     if not user:
         return jsonify({"error": "User not found"}), 404
+        
     return jsonify({"user": user.to_dict()}), 200

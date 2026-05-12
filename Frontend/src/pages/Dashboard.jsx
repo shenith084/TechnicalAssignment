@@ -28,6 +28,7 @@ export default function Dashboard() {
   const [budgetProgress, setBudgetProgress] = useState([])
   const [loading, setLoading] = useState(true)
 
+  // Fetch dashboard summary, charts data, and budget progress concurrently
   useEffect(() => {
     Promise.all([
       getSummary(),

@@ -3,11 +3,13 @@ import { getMe } from '../api/auth'
 
 const AuthContext = createContext(null)
 
+// Provides authentication state and methods to the application
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(() => localStorage.getItem('token'))
   const [loading, setLoading] = useState(true)
 
+  // Verify token and load user profile on mount or token change
   useEffect(() => {
     if (token) {
       getMe(token)
