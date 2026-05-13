@@ -17,11 +17,14 @@ const navItems = [
   { to: '/categories', label: 'Categories', icon: Tag },
 ]
 
+// Our main navigation bar component that sits at the top of the app.
+// It handles showing the right links and the user's profile info.
 export default function Navbar() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
 
-  // Clear session and redirect to login
+  // Logs the user out of the app by clearing their session data, 
+  // then redirects them back to the login page so they can't access protected areas.
   function handleLogout() {
     logout()
     navigate('/login')

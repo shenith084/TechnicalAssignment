@@ -4,23 +4,6 @@ A full-stack personal finance management application that helps users track inco
 
 ---
 
-## 📋 Table of Contents
-
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [System Architecture](#-system-architecture)
-- [Project Structure](#-project-structure)
-- [Setup Instructions](#-setup-instructions)
-  - [1. Prerequisites](#1-prerequisites)
-  - [2. Installing Dependencies](#2-installing-dependencies)
-  - [3. Running the Database](#3-running-the-database)
-  - [4. Running the Backend](#4-running-the-backend)
-  - [5. Running the Frontend](#5-running-the-frontend)
-- [API Endpoints](#-api-endpoints)
-- [Database Schema](#-database-schema)
-
----
-
 ## ✨ Features
 
 - **User Authentication** — JWT-based secure register/login/logout
@@ -92,57 +75,6 @@ A full-stack personal finance management application that helps users track inco
 ```
 
 ---
-
-## 📁 Project Structure
-
-```
-Assigment/
-├── Backend/
-│   ├── app/
-│   │   ├── __init__.py          # App factory, blueprint registration
-│   │   ├── config.py            # Configuration (JWT, DB URI, secrets)
-│   │   ├── extensions.py        # SQLAlchemy, JWT, CORS instances
-│   │   ├── models/
-│   │   │   ├── user.py          # User model
-│   │   │   ├── category.py      # Category model
-│   │   │   ├── transaction.py   # Transaction model
-│   │   │   └── budget.py        # Budget model
-│   │   └── routes/
-│   │       ├── auth.py          # Register, Login, Me endpoints
-│   │       ├── transactions.py  # CRUD for transactions
-│   │       ├── budgets.py       # CRUD for budgets
-│   │       ├── categories.py    # CRUD for categories
-│   │       └── dashboard.py     # Analytics & summary endpoints
-│   ├── requirements.txt
-│   └── run.py
-│
-└── Frontend/
-    ├── src/
-    │   ├── App.jsx              # Root router with protected routes
-    │   ├── main.jsx             # React entry point
-    │   ├── index.css            # Global styles & design tokens
-    │   ├── api/                 # Axios instance & API calls
-    │   ├── context/
-    │   │   └── AuthContext.jsx  # Global auth state (login/logout)
-    │   ├── components/
-    │   │   ├── Navbar.jsx       # Top navigation bar
-    │   │   ├── Modal.jsx        # Reusable modal wrapper
-    │   │   ├── ConfirmDelete.jsx # Inline delete confirmation
-    │   │   ├── StatCard.jsx     # Dashboard stat card
-    │   │   └── ProtectedRoute.jsx # Auth guard HOC
-    │   └── pages/
-    │       ├── Login.jsx        # Login page
-    │       ├── Register.jsx     # Registration page
-    │       ├── Dashboard.jsx    # Analytics & summary page
-    │       ├── Transactions.jsx # Transaction CRUD page
-    │       ├── Budgets.jsx      # Budget CRUD page
-    │       └── Categories.jsx   # Category CRUD page
-    ├── package.json
-    └── vite.config.js
-```
-
----
-
 ## 🚀 Setup Instructions
 
 ### 1. Prerequisites
@@ -168,8 +100,6 @@ python -m venv venv
 # Windows
 venv\Scripts\activate
 
-# macOS/Linux
-source venv/bin/activate
 
 # Install Python packages
 pip install -r requirements.txt
@@ -228,94 +158,3 @@ The React app will start at: **http://localhost:5173**
 
 Open your browser and navigate to `http://localhost:5173` to use the application.
 
----
-
-## 📡 API Endpoints
-
-### Auth — `/api/auth`
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| POST | `/register` | Register a new user | ❌ |
-| POST | `/login` | Login and receive JWT | ❌ |
-| GET | `/me` | Get current user info | ✅ |
-
-### Transactions — `/api/transactions`
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/` | List all user transactions | ✅ |
-| POST | `/` | Create a new transaction | ✅ |
-| PUT | `/<id>` | Update a transaction | ✅ |
-| DELETE | `/<id>` | Delete a transaction | ✅ |
-
-### Categories — `/api/categories`
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/` | List all user categories | ✅ |
-| POST | `/` | Create a new category | ✅ |
-| PUT | `/<id>` | Update a category | ✅ |
-| DELETE | `/<id>` | Delete a category | ✅ |
-
-### Budgets — `/api/budgets`
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/` | List all user budgets | ✅ |
-| POST | `/` | Create a new budget | ✅ |
-| PUT | `/<id>` | Update a budget | ✅ |
-| DELETE | `/<id>` | Delete a budget | ✅ |
-
-### Dashboard — `/api/dashboard`
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/summary` | Financial summary + recent transactions | ✅ |
-| GET | `/expense-by-category` | Expense totals grouped by category | ✅ |
-| GET | `/monthly` | Monthly income vs expense data | ✅ |
-| GET | `/budget-progress` | Budget vs spent per category | ✅ |
-
----
-
-## 🗄️ Database Schema
-
-### users
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | INTEGER | PRIMARY KEY |
-| username | VARCHAR(80) | UNIQUE, NOT NULL |
-| email | VARCHAR(120) | UNIQUE, NOT NULL |
-| password_hash | VARCHAR(255) | NOT NULL |
-
-### categories
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | INTEGER | PRIMARY KEY |
-| name | VARCHAR(100) | NOT NULL |
-| type | VARCHAR(20) | NOT NULL (income/expense) |
-| user_id | INTEGER | FK → users.id, NOT NULL |
-
-### transactions
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | INTEGER | PRIMARY KEY |
-| title | VARCHAR(200) | NOT NULL |
-| amount | FLOAT | NOT NULL |
-| type | VARCHAR(20) | NOT NULL (income/expense) |
-| date | DATE | NOT NULL |
-| note | TEXT | NULLABLE |
-| category_id | INTEGER | FK → categories.id, NULLABLE |
-| user_id | INTEGER | FK → users.id, NOT NULL |
-
-### budgets
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | INTEGER | PRIMARY KEY |
-| amount | FLOAT | NOT NULL |
-| month | INTEGER | NOT NULL |
-| year | INTEGER | NOT NULL |
-| category_id | INTEGER | FK → categories.id, NOT NULL |
-| user_id | INTEGER | FK → users.id, NOT NULL |
-
----
-
-## 👤 Author
-
-**Shenith Chanidu**  
-Technical Assignment — Personal Finance Tracker

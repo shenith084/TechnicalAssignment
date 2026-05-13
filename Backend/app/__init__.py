@@ -3,6 +3,8 @@ from app.config import Config
 from app.extensions import db, jwt, cors
 
 
+# The main factory function that brings our Flask app to life!
+# It initializes the app, connects to our database, and registers all the routes we need.
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
